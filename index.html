@@ -1,41 +1,21 @@
 <!DOCTYPE html>
 <html lang="sv">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FULL REPORT</title>
+    <title>Bildgalleri och PDF-visare</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
-        
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .gallery img {
-            width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-        
-        .pdf-viewer {
+        /* ... behåll tidigare CSS ... */
+        #pdf-viewer {
             width: 100%;
             height: 600px;
-            border: none;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
-
 <body>
-    <h1>Screenshots:</h1>
+    <h1>Bildgalleri</h1>
     <div class="gallery">
         <img src="31b4860b-1b7d-45f5-80ac-b7d5958afc74.jpeg" alt="Bild 1">
         <img src="47d87f16-fe52-4ba8-95a0-409f1a054b99.jpeg" alt="Bild 2">
@@ -43,12 +23,26 @@
         <img src="2024-07-26 11_59_02-Window.png" alt="Bild 4">
     </div>
 
-    <h1>PDF:</h1>
-    <iframe class="pdf-viewer" src="https://mozilla.github.io/pdf.js/web/viewer.html?file=FullReport.pdf"></iframe>
+    <h1>PDF-visare</h1>
+    <div id="pdf-viewer"></div>
 
     <script>
-        // JavaScript för att hantera bildvisning eller andra interaktioner kan läggas till här
+        pdfjsLib.getDocument('FullReport.pdf').promise.then(function(pdf) {
+            pdf.getPage(1).then(function(page) {
+                var scale = 1.5;
+                var viewport = page.getViewport({scale: scale});
+                var canvas = document.createElement('canvas');
+                var context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+                document.getElementById('pdf-viewer').appendChild(canvas);
+            });
+        });
     </script>
 </body>
-
 </html>
